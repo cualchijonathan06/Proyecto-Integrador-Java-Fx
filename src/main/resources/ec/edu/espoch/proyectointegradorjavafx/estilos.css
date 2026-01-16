@@ -1,0 +1,253 @@
+/* =========================================================
+   ESTILOS GENERALES - Proyecto Integrador (JavaFX)
+   Sencillo, limpio y legible
+   ========================================================= */
+
+/* Fondo general */
+.root
+{
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+}
+
+/* ScrollPane sin borde feo */
+.titulo-buscado
+{
+    -fx-text-fill: #2E86FF;
+    -fx-font-weight: bold;
+}
+
+.scroll-pane
+{
+    -fx-background-color: #F6F7FB;
+}
+
+.scroll-pane .viewport
+{
+    -fx-background-color: #F6F7FB;
+}
+
+/* Contenedor principal (tu VBox) */
+.vbox
+{
+    -fx-background-color: transparent;
+}
+
+/* Labels (títulos y textos) */
+.label
+{
+    -fx-text-fill: #222;
+}
+
+/* Título principal (Primary View) */
+.label:focused
+{
+    -fx-text-fill: #222;
+}
+
+/* Combobox */
+.combo-box
+{
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #D6DAE6;
+    -fx-border-width: 1;
+    -fx-background-color: #FFFFFF;
+}
+
+.combo-box:hover
+{
+    -fx-border-color: #B8C0D9;
+}
+
+/* TextField */
+.text-field
+{
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D6DAE6;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 7 10 7 10;
+}
+
+.text-field:focused
+{
+    -fx-border-color: #2E86FF;
+    -fx-border-width: 2;
+}
+
+/* TextArea */
+.text-area
+{
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D6DAE6;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.text-area .content
+{
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 10;
+}
+
+.text-area:focused
+{
+    -fx-border-color: #2E86FF;
+    -fx-border-width: 2;
+}
+
+/* Botones generales */
+.button
+{
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #1F2A44;
+    -fx-border-color: #D6DAE6;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 7 14 7 14;
+}
+
+.button:hover
+{
+    -fx-background-color: #EEF2FF;
+    -fx-border-color: #B8C0D9;
+}
+
+.button:pressed
+{
+    -fx-background-color: #E2E8FF;
+}
+
+/* Botón principal (Calcular) - si quieres que se vea más importante
+   (si no quieres esto, me dices y lo quito)
+*/
+#btnCalcular
+{
+    -fx-background-color: #2E86FF;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #2E86FF;
+}
+
+#btnCalcular:hover
+{
+    -fx-background-color: #1F74E6;
+    -fx-border-color: #1F74E6;
+}
+
+/* Botón deshabilitado */
+.button:disabled
+{
+    -fx-opacity: 0.6;
+}
+
+/* Label de resultado */
+#lblResultado
+{
+    -fx-text-fill: #0E5E2A;
+    -fx-font-weight: bold;
+}
+
+/* =========================================================
+   TABLA (Historial)
+   ========================================================= */
+
+.table-view
+{
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D6DAE6;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.table-view .column-header-background
+{
+    -fx-background-color: #EEF2FF;
+}
+
+.table-view .column-header,
+.table-view .filler
+{
+    -fx-background-color: #EEF2FF;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header .label
+{
+    -fx-text-fill: #1F2A44;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:filled:selected,
+.table-row-cell:filled:selected:hover
+{
+    -fx-background-color: rgba(46,134,255,0.20);
+}
+
+/* =========================================================
+   RESALTADO DE NAVEGACIÓN (para cuando la lupa "encuentra" algo)
+   ========================================================= */
+
+.resaltado
+{
+    -fx-border-color: #2E86FF;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-background-color: rgba(46,134,255,0.10);
+}
+
+/* =========================================================
+   ======================  SOLO LUPA  ======================
+   ESTO ES ESPECÍFICO PARA LA LUPA (btnLupa + su menú)
+   ========================================================= */
+
+/* Botón lupa */
+#btnLupa
+{
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #2E86FF;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 6 10 6 10;
+}
+
+#btnLupa:hover
+{
+    -fx-background-color: rgba(46,134,255,0.10);
+    -fx-border-color: #1F74E6;
+}
+
+#btnLupa:pressed
+{
+    -fx-background-color: rgba(46,134,255,0.18);
+}
+
+/* Menú contextual de la lupa */
+.context-menu
+{
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D6DAE6;
+    -fx-border-width: 1;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.menu-item:focused
+{
+    -fx-background-color: rgba(46,134,255,0.18);
+}
+
+.menu-item .label
+{
+    -fx-text-fill: #1F2A44;
+}
+
+/* =========================================================
+   FIN
+   ========================================================= */
