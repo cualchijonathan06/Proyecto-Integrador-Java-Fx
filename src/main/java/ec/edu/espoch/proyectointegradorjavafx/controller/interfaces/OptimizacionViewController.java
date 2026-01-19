@@ -3,27 +3,28 @@ package ec.edu.espoch.proyectointegradorjavafx.controller.interfaces;
 import ec.edu.espoch.proyectointegradorjavafx.controller.usercase.ControladorOptimizacion;
 import ec.edu.espoch.proyectointegradorjavafx.model.objetos.Ambito;
 import ec.edu.espoch.proyectointegradorjavafx.model.objetos.Historial;
-import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Duration;
-import javafx.util.StringConverter;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class OptimizacionViewController
 {
     @FXML private ScrollPane spPrincipal;
+    @FXML private TextField txtA;
+    @FXML private TextField txtB;
     @FXML private Button btnLupa;
-
+    @FXML private Button btnVerCalculo;
     @FXML private ComboBox<Ambito> cmbAmbito;
-    @FXML private Label lblDescripcionTitulo;
     @FXML private TextArea txtDescripcion;
     @FXML private Label lblResultado;
-    @FXML private Button btnVerCalculo;
-
     @FXML private TableView<Historial> tblHistorial;
     @FXML private TableColumn<Historial, String> colAmbito;
     @FXML private TableColumn<Historial, String> colDescripcion;
@@ -31,99 +32,75 @@ public class OptimizacionViewController
     @FXML private TableColumn<Historial, Double> colB;
     @FXML private TableColumn<Historial, String> colResultado;
 
-    private ObservableList<Historial> listaHistorial = FXCollections.observableArrayList();
-    private ControladorOptimizacion usecase = new ControladorOptimizacion();
+    private final ObservableList<Historial> listaHistorial = FXCollections.observableArrayList();
+    private final ControladorOptimizacion usecase = new ControladorOptimizacion();
+    private ContextMenu menuLupa;
 
     @FXML
     public void initialize()
     {
-        configurarComboAmbito();
-        configurarTabla();
-        reiniciarVista();
-    }
-
-    private void configurarComboAmbito()
-    {
+        bloquearNumeros(txtA);
+        bloquearNumeros(txtB);
         cmbAmbito.setItems(FXCollections.observableArrayList(Ambito.values()));
-
-        cmbAmbito.setConverter(new StringConverter<Ambito>()
-        {
-            @Override
-            public String toString(Ambito a)
-            {
-                if(a == null)
-                {
-                    return "";
-                }
-
-                if(a == Ambito.SOFTWARE)
-                {
-                    return "Software";
-                }
-                if(a == Ambito.EDUCACION)
-                {
-                    return "Educación";
-                }
-                if(a == Ambito.INDUSTRIAL)
-                {
-                    return "Industrial";
-                }
-                return "Salud";
-            }
-
-            @Override
-            public Ambito fromString(String s)
-            {
-                return null;
-            }
-        });
-
-        cmbAmbito.setOnAction(e ->
-        {
+        cmbAmbito.setOnAction(e -> {
             usecase.reset();
-            reiniciarVista();
+            limpiarSalida();
         });
-    }
-
-    private void configurarTabla()
-    {
         tblHistorial.setItems(listaHistorial);
-
         colAmbito.setCellValueFactory(new PropertyValueFactory<>("ambito"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         colA.setCellValueFactory(new PropertyValueFactory<>("a"));
         colB.setCellValueFactory(new PropertyValueFactory<>("b"));
         colResultado.setCellValueFactory(new PropertyValueFactory<>("resultado"));
+        configurarDobleClick(colDescripcion, "Descripción completa");
+        configurarDobleClick(colResultado, "Resultado completo");
+        crearMenuLupa();
+        limpiarSalida();
     }
 
-    private void reiniciarVista()
+    private void limpiarSalida()
     {
         lblResultado.setText("");
         btnVerCalculo.setDisable(true);
-        limpiarResaltados();
+    }
+
+    private void mostrarAlerta(String titulo, String msg, Alert.AlertType tipo)
+    {
+        Alert a = new Alert(tipo);
+        a.setTitle(titulo);
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
+    }
+
+    private void bloquearNumeros(TextField campo)
+    {
+        campo.setOnKeyTyped(e -> {
+            String c = e.getCharacter();
+            if(!c.matches("[0-9\\.]"))
+            {
+                e.consume();
+                mostrarAlerta("Advertencia", "Solo números (se aceptan decimales).", Alert.AlertType.WARNING);
+            }
+        });
     }
 
     @FXML
     private void calcular()
     {
         Ambito ambito = cmbAmbito.getValue();
-
         if(ambito == null)
         {
-            alerta("Seleccione un ámbito.");
+            mostrarAlerta("Aviso", "Seleccione un ámbito.", Alert.AlertType.WARNING);
             return;
         }
-
         String descripcion = txtDescripcion.getText();
-
         String analitico = usecase.calcular(ambito, descripcion);
-
         if(analitico == null || analitico.trim().isEmpty())
         {
-            alerta("No se pudo calcular. Revise el ámbito o los datos.");
+            mostrarAlerta("Aviso", "No se pudo calcular.", Alert.AlertType.WARNING);
             return;
         }
-
         lblResultado.setText(analitico);
         btnVerCalculo.setDisable(false);
     }
@@ -131,138 +108,177 @@ public class OptimizacionViewController
     @FXML
     private void guardar()
     {
-        if(usecase.getUltimoResultadoAnalitico() == null || usecase.getUltimoResultadoAnalitico().isEmpty())
+        String ultimo = usecase.getUltimoResultadoAnalitico();
+        if(ultimo == null || ultimo.trim().isEmpty())
         {
-            alerta("Primero debe calcular el resultado antes de guardar.");
+            mostrarAlerta("Aviso", "Primero calcule antes de guardar.", Alert.AlertType.WARNING);
             return;
         }
 
         Ambito ambito = cmbAmbito.getValue();
-
         if(ambito == null)
         {
-            alerta("Seleccione un ámbito.");
+            mostrarAlerta("Aviso", "Seleccione un ámbito.", Alert.AlertType.WARNING);
             return;
         }
 
-        String descripcion = txtDescripcion.getText();
-
-        Historial fila = usecase.armarFilaHistorial(ambito, descripcion);
+        Historial fila = usecase.armarFilaHistorial(ambito, txtDescripcion.getText());
         listaHistorial.add(fila);
-
-        seleccionarUltimaFila();
-        resaltarYEnfocar(tblHistorial);
-    }
-
-    private void seleccionarUltimaFila()
-    {
         tblHistorial.refresh();
         tblHistorial.getSelectionModel().selectLast();
-        tblHistorial.scrollTo(listaHistorial.size()-1);
+        tblHistorial.scrollTo(listaHistorial.size() - 1);
+        irYResaltar(tblHistorial);
     }
 
     @FXML
     private void verCalculoMatematico()
     {
         String detalle = usecase.getDetalleCalculo();
-
         if(detalle == null || detalle.trim().isEmpty())
         {
-            alerta("Primero debe calcular.");
+            mostrarAlerta("Aviso", "Primero debe calcular.", Alert.AlertType.WARNING);
             return;
         }
-
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Cálculo matemático");
-        alert.setHeaderText("Detalle de la optimización");
+        alert.setHeaderText(null);
         alert.setContentText(detalle);
         alert.getDialogPane().setMinWidth(650);
         alert.getDialogPane().setMinHeight(420);
         alert.showAndWait();
     }
+    
+    @FXML
+    private void eliminarHistorial()
+    {
+        Historial seleccionado = tblHistorial.getSelectionModel().getSelectedItem();
+        if(seleccionado == null)
+        {
+            mostrarAlerta("Advertencia", "Seleccione un registro del historial.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        if(pedirLoginParaEliminar())
+        {
+            listaHistorial.remove(seleccionado);
+            mostrarAlerta("Listo", "Registro eliminado.", Alert.AlertType.INFORMATION);
+        }
+        else
+        {
+            mostrarAlerta("Aviso", "No autorizado.", Alert.AlertType.WARNING);
+        }
+    }
+
+    private boolean pedirLoginParaEliminar()
+    {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ec/edu/espoch/proyectointegradorjavafx/login.fxml"));
+            Parent root = loader.load();
+            LoginViewController controller = loader.getController();
+            Stage stage = new Stage();
+            stage.setTitle("Confirmar eliminación");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            controller.setDialogStage(stage);
+            stage.showAndWait();
+
+            return controller.isAutenticado();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void crearMenuLupa()
+    {
+        MenuItem verDescripcion = new MenuItem("Ver descripción");
+        MenuItem verHistorial = new MenuItem("Ver historial");
+
+        verDescripcion.setOnAction(e -> irYResaltar(txtDescripcion));
+        verHistorial.setOnAction(e -> irYResaltar(tblHistorial));
+
+        menuLupa = new ContextMenu(verDescripcion, verHistorial);
+    }
 
     @FXML
     private void mostrarMenuLupa()
     {
-        ContextMenu menu = new ContextMenu();
-
-        MenuItem irDescripcion = new MenuItem("Ir a: Descripción del problema");
-        MenuItem irTabla = new MenuItem("Ir a: Tabla / Historial");
-        MenuItem irCalculo = new MenuItem("Ver cálculo matemático");
-
-        irDescripcion.setOnAction(e ->
+        if(menuLupa != null)
         {
-            limpiarResaltados();
-            if(lblDescripcionTitulo != null)
-            {
-                lblDescripcionTitulo.getStyleClass().add("titulo-buscado");
-                quitarTituloLuego(lblDescripcionTitulo);
-            }
-            resaltarYEnfocar(txtDescripcion);
-            txtDescripcion.requestFocus();
-        });
-
-        irTabla.setOnAction(e ->
-        {
-            limpiarResaltados();
-            resaltarYEnfocar(tblHistorial);
-            tblHistorial.requestFocus();
-        });
-
-        irCalculo.setOnAction(e -> verCalculoMatematico());
-
-        menu.getItems().addAll(irDescripcion, irTabla, irCalculo);
-        menu.show(btnLupa, Side.BOTTOM, 0, 0);
+            menuLupa.show(btnLupa, Side.BOTTOM, 0, 0);
+        }
     }
 
-    private void resaltarYEnfocar(Control nodo)
+    private void irYResaltar(Control nodo)
     {
+        if(nodo == null)
+        {
+            return;
+        }
+
+        txtDescripcion.getStyleClass().remove("resaltado");
+        tblHistorial.getStyleClass().remove("resaltado");
         nodo.getStyleClass().add("resaltado");
-        irASeccion(nodo);
+        irA(nodo);
+        nodo.requestFocus();
     }
 
-    private void irASeccion(Control nodo)
+    private void irA(Control nodo)
     {
         if(spPrincipal == null || spPrincipal.getContent() == null)
         {
             return;
         }
-
         double alturaTotal = spPrincipal.getContent().getBoundsInLocal().getHeight();
-        double y = nodo.getLayoutY();
+        double y = nodo.getBoundsInParent().getMinY();
 
         if(alturaTotal <= 0)
         {
             return;
         }
-
         spPrincipal.setVvalue(y / alturaTotal);
     }
 
-    private void limpiarResaltados()
+    private void configurarDobleClick(TableColumn<Historial, String> columna, String titulo)
     {
-        txtDescripcion.getStyleClass().remove("resaltado");
-        tblHistorial.getStyleClass().remove("resaltado");
+        columna.setCellFactory(tc -> {
+            TableCell<Historial, String> cell = new TableCell<Historial, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty)
+                {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                }
+            };
 
-        if(lblDescripcionTitulo != null)
-        {
-            lblDescripcionTitulo.getStyleClass().remove("titulo-buscado");
-        }
+            cell.setOnMouseClicked(e -> {
+                if(e.getClickCount() == 2 && !cell.isEmpty())
+                {
+                    String texto = cell.getItem();
+                    if(texto != null && !texto.trim().isEmpty())
+                    {
+                        mostrarDetalleCompleto(titulo, texto);
+                    }
+                }
+            });
+            return cell;
+        });
     }
 
-    private void quitarTituloLuego(Label lbl)
+    private void mostrarDetalleCompleto(String titulo, String contenido)
     {
-        PauseTransition pausa = new PauseTransition(Duration.seconds(1.2));
-        pausa.setOnFinished(ev -> lbl.getStyleClass().remove("titulo-buscado"));
-        pausa.play();
-    }
-
-    private void alerta(String msg)
-    {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Aviso");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
         alert.setHeaderText(null);
-        alert.setContentText(msg);
+        TextArea area = new TextArea(contenido);
+        area.setWrapText(true);
+        area.setEditable(false);
+        alert.getDialogPane().setContent(area);
+        alert.getDialogPane().setMinWidth(650);
+        alert.getDialogPane().setMinHeight(400);
         alert.showAndWait();
     }
 }

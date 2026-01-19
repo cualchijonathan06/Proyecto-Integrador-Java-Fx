@@ -1,5 +1,6 @@
 package ec.edu.espoch.proyectointegradorjavafx.controller.interfaces;
 
+import ec.edu.espoch.proyectointegradorjavafx.controller.usercase.LoginUseCase;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 public class LoginViewController
 {
     @FXML private TextField txtUsuario;
@@ -18,8 +18,21 @@ public class LoginViewController
     @FXML private Button btnIngresar;
     @FXML private Label lblMensaje;
 
+    private boolean autenticado = false;
+    private Stage dialogStage;
+
+    public void setDialogStage(Stage stage)
+    {
+        this.dialogStage = stage;
+    }
+
+    public boolean isAutenticado()
+    {
+        return autenticado;
+    }
+
     @FXML
-    private void ingresar() throws IOException
+    private void ingresar()
     {
         String usuario = txtUsuario.getText();
         String contrasena = txtContrasena.getText();
@@ -36,15 +49,16 @@ public class LoginViewController
             return;
         }
 
-        if(usuario.equals("admin") && contrasena.equals("123"))
-        {
-            Parent root = FXMLLoader.load(getClass().getResource("/ec/edu/espoch/proyectointegradorjavafx/app.fxml"));
-            Scene scene = new Scene(root);
+        LoginUseCase useCase = new LoginUseCase();
 
-            Stage stage = (Stage) btnIngresar.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Proyecto Integrador - Optimización");
-            stage.show();
+        if(useCase.ingresar(usuario, contrasena))
+        {
+            autenticado = true;
+
+            if(dialogStage != null)
+            {
+                dialogStage.close();
+            }
         }
         else
         {

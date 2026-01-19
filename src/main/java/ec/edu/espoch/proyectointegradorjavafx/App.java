@@ -8,23 +8,23 @@ import javafx.stage.Stage;
 
 public class App extends Application
 {
-
-    @Override
-    public void start(Stage stage)
+@Override
+public void start(Stage stage)
+{
+    try
     {
-        try
-        {
-            Parent root = loadFXML("login");
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Proyecto Integrador - Login");
-            stage.show();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        Parent root = loadFXML("app");   // ANTES: "login"
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Proyecto Integrador - Optimización");
+        stage.show();
     }
+    catch(Exception e)
+    {
+        e.printStackTrace();
+    }
+}
+
 
     private Parent loadFXML(String fxml) throws Exception
     {
