@@ -36,7 +36,20 @@
                         </right>
                     </BorderPane>
 
-                    <HBox style="-fx-border-color: transparent transparent #E0E0E0 transparent; -fx-border-width: 1;" />
+                    <HBox prefHeight="18.0" prefWidth="655.0" style="-fx-border-color: transparent transparent #E0E0E0 transparent; -fx-border-width: 1;">
+                  <children>
+      <Button fx:id="btnLupa" accessibleText="Menú rápido" mnemonicParsing="false" onAction="#mostrarMenuLupa" prefHeight="35.0" prefWidth="62.0" styleClass="btn-icon" text="🔎">
+                        <HBox.margin>
+                           <Insets />
+                        </HBox.margin>
+                        <padding>
+                           <Insets left="300.0" />
+                        </padding>
+                     </Button>
+                  </children>
+                  <padding>
+                     <Insets left="600.0" />
+                  </padding></HBox>
 
                     <VBox alignment="CENTER_LEFT" spacing="15.0">
                         

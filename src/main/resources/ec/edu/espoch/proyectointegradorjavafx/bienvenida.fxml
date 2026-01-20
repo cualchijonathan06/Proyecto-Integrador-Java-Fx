@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane style="-fx-background-color: linear-gradient(to bottom right, #2E5661, #3B7B8E);" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.edu.espoch.proyectointegradorjavafx.controller.interfaces.BienvenidaViewController">
+
+    <!-- Centro: tarjeta -->
+    <center>
+        <VBox alignment="TOP_CENTER" maxWidth="520.0" prefWidth="520.0" spacing="18.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 22, 0.25, 0, 10);" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="26" left="34" right="34" top="30" />
+            </padding>
+
+            <!-- Encabezado -->
+            <VBox alignment="CENTER_LEFT" maxWidth="480.0" spacing="6.0">
+                <Label style="-fx-font-size: 26px; -fx-font-weight: 800; -fx-text-fill: #243B46;" text="Optimización de Proyectos" />
+                <Label style="-fx-font-size: 13px; -fx-text-fill: #6B7C86;" text="Cálculo y Gestión" />
+            </VBox>
+
+            <Region maxHeight="4.0" prefHeight="4.0" style="-fx-background-color: #E9EEF2;" />
+
+            <!-- Bloque central -->
+            <VBox alignment="CENTER" maxWidth="480.0" spacing="14.0">
+                <ImageView fitHeight="92.0" fitWidth="92.0" preserveRatio="true" smooth="true">
+                    <!-- Usa tu imagen existente -->
+                    <image>
+                        <Image url="@verify.png" />
+                    </image>
+                </ImageView>
+
+                <VBox alignment="CENTER" spacing="6.0">
+                    <Label style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: #243B46;" text="¡Bienvenido/a!" />
+                    <Label maxWidth="420.0" style="-fx-font-size: 13px; -fx-text-fill: #6B7C86; -fx-alignment: center;" text="Accede al sistema para analizar y optimizar tus proyectos" wrapText="true" />
+                </VBox>
+
+                <!-- Mensaje de estado (visibilidad del sistema) -->
+                <Label fx:id="lblEstado" maxWidth="440.0" style="-fx-background-color: #F5F8FA; -fx-background-radius: 12; -fx-padding: 10 12 10 12; -fx-text-fill: #37525E; -fx-font-size: 12px;" text="Listo para continuar." wrapText="true" />
+            </VBox>
+
+            <Region maxHeight="4.0" prefHeight="4.0" style="-fx-background-color: #E9EEF2;" />
+
+            <!-- Acciones (control del usuario + consistencia) -->
+            <HBox alignment="CENTER_RIGHT" maxWidth="480.0" spacing="12.0">
+                <Button fx:id="btnSalir" mnemonicParsing="false" onAction="#clicSalir" style="-fx-background-color: transparent; -fx-text-fill: #2E5661; -fx-font-weight: 700; -fx-padding: 10 16 10 16; -fx-background-radius: 10; -fx-border-color: #C9D6DD; -fx-border-radius: 10;" text="Salir" />
+
+                <Button fx:id="btnContinuar" defaultButton="true" mnemonicParsing="false" onAction="#clicContinuar" style="-fx-background-color: #2D7DF6; -fx-text-fill: white; -fx-font-weight: 800; -fx-padding: 10 18 10 18; -fx-background-radius: 10;" text="Continuar" />
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

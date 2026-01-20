@@ -13,7 +13,7 @@ public void start(Stage stage)
 {
     try
     {
-        Parent root = loadFXML("app");   // ANTES: "login"
+        Parent root = loadFXML("bienvenida");   // ANTES: "login"
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Proyecto Integrador - Optimización");
